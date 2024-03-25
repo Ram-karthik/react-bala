@@ -103,6 +103,7 @@ code {
 input {
   height: 56px;
   padding: 0 15px 0 15px;
+  border-color: #0000003a;
 }
 
 /* btn styles */
