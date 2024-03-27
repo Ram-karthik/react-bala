@@ -10,7 +10,8 @@ import NewPost from './NewPost';
 import PostPage from './PostPage';
 import Post from './Post';
 import PostLayout from './PostLayout';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 
 function App() {
   const [posts, setPost] = useState([
@@ -39,14 +40,25 @@ function App() {
       body: 'Expert  React'
     }
   ])
-  // const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
 
+  useEffect(() => {
+    const filteredResults = posts.filter((post) => ((post.body).toLowerCase()).includes(search.toLowerCase()));
+    setSearchResults(filteredResults);
+  }, [posts, search])
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMM dd yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    const allPost = [...posts, newPost];
+    setPost(allPost);
+    setPostTitle('');
+    setPostBody('');
   }
   return (
     <div>
@@ -62,9 +74,9 @@ function App() {
         <Route path='*' element={<Missing />} />
       </Routes> */}
       <Header title="Social App" />
-      <Nav />
-      <Home posts={posts} />
-      <NewPost handleSubmit={handleSubmit} />
+      <Nav search={search} setSearch={setSearch} />
+      <Home posts={searchResults} />
+      <NewPost handleSubmit={handleSubmit} postTitle={postTitle} setPostTitle={setPostTitle} postBody={postBody} setPostBody={setPostBody} />
       <PostPage />
       <About />
       <Missing />
@@ -75,4 +87,4 @@ function App() {
 
 export default App;
 
-//7.47.12
+//8.00.52
