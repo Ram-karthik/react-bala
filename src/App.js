@@ -65,7 +65,7 @@ function App() {
   }
 
   const handleDelete = (id) => {
-    const postList = posts.filter(post => post.id !== id);
+    const postList = posts.filter(post => post.id !== id); 
     setPost(postList);
     navigate('/')
   }
