@@ -1,4 +1,4 @@
-import { Link, Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import About from './About';
 import './App.css';
 import Footer from './Footer';
@@ -8,8 +8,8 @@ import Missing from './Missing';
 import Nav from './Nav';
 import NewPost from './NewPost';
 import PostPage from './PostPage';
-import Post from './Post';
-import PostLayout from './PostLayout';
+// import Post from './Post';
+// import PostLayout from './PostLayout';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 
@@ -44,10 +44,11 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const filteredResults = posts.filter((post) => ((post.body).toLowerCase()).includes(search.toLowerCase()));
-    setSearchResults(filteredResults);
+    setSearchResults(filteredResults.reverse());
   }, [posts, search])
 
   const handleSubmit = (e) => {
@@ -59,32 +60,38 @@ function App() {
     setPost(allPost);
     setPostTitle('');
     setPostBody('');
+    // allPost.reverse();
+    navigate('/');
+  }
+
+  const handleDelete = (id) => {
+    const postList = posts.filter(post => post.id !== id);
+    setPost(postList);
+    navigate('/')
   }
   return (
     <div>
-      {/* <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/about' element={<About />} />
-        <Route path='/newpost' element={<NewPost />} />
-        <Route path='/postpage' element={<PostLayout />}>
-          <Route index element={<PostPage />} />
-          <Route path=':a' element={<Post />} />
-          <Route path='newpost' element={<NewPost />} />
-        </Route>
-        <Route path='*' element={<Missing />} />
-      </Routes> */}
       <Header title="Social App" />
       <Nav search={search} setSearch={setSearch} />
-      <Home posts={searchResults} />
-      <NewPost handleSubmit={handleSubmit} postTitle={postTitle} setPostTitle={setPostTitle} postBody={postBody} setPostBody={setPostBody} />
-      <PostPage />
+      <Routes>
+        <Route path='/' element={<Home posts={searchResults} />} />
+        <Route path='about' element={<About />} />
+        <Route path='/post' >
+          <Route index
+            element={<NewPost handleSubmit={handleSubmit} postTitle={postTitle} setPostTitle={setPostTitle} postBody={postBody} setPostBody={setPostBody} />
+            } />
+          <Route path=':id' element={<PostPage posts={posts} handleDelete={handleDelete} />} />
+        </Route>
+        <Route path='*' element={<Missing />} />
+      </Routes>
+
+      {/* <PostPage />
       <About />
       <Missing />
+       */}
       <Footer />
     </div>
   );
 }
 
 export default App;
-
-//8.00.52

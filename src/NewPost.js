@@ -2,7 +2,7 @@ import React from 'react'
 
 const NewPost = ({ handleSubmit, postTitle, setPostTitle, postBody, setPostBody }) => {
     return (
-        <main>
+        <main className='new-post-main'>
             <h3>New Post</h3>
             <form onSubmit={handleSubmit}>
                 <label for="title">Title:</label> <br /><br />
